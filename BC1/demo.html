@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>B-RAN SHARING</title>
+</head>
+<body>
+<font size="8" face="Verdana" color="Green">
+<center>Welcome to RAN-sharing Blockchain</center>
+</font>
+<br>
+<a href="http://{{ my_host }}:{{ my_port }}/mine">MINE</a>
+<br>
+<a href="http://{{ my_host }}:{{ my_port }}/nodes/resolve">CHAIN</a>
+<br>
+<a href="http://{{ my_host }}:{{ my_port }}/nodes">NODES</a>
+<br>
+<a href="http://{{ my_host }}:{{ my_port }}/transactions">TRANSACTIONS</a>
+<br>
+<form action="/register" enctype='multipart/form-data' method='POST'>
+        <input name="nodes" type="text" value={{nodes_reg}}>
+        <input type="submit" value="Add_new_node" class="button-new" style="margin-top:20px;"/>
+</form>
