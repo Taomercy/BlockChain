@@ -1,8 +1,7 @@
-# 打印版本的信息，没啥大用
 version: "3"
 
 services:
-  web1:
+  web:
     build:
       context: .
       dockerfile: ./Dockerfile
@@ -10,24 +9,20 @@ services:
       - "5000:5000"
     volumes:
       - /home/BC1
-    command: python3 /home/BC1/server.py -p 5000
+    command: python3 /home/BC1/server.py -p 5000 -a "0.0.0.0"
 
   web2:
-    build:
-      context: .
-      dockerfile: ./Dockerfile
+    image: blockchain_web
     ports:
       - "5001:5001"
     volumes:
         - /home/BC1
-    command: python3 /home/BC1/server.py -p 5001
+    command: python3 /home/BC1/server.py -p 5001 -a "0.0.0.0"
 
   web3:
-    build:
-      context: .
-      dockerfile: ./Dockerfile
+    image: blockchain_web
     ports:
       - "5002:5002"
     volumes:
       - /home/BC1
-    command: python3 /home/BC1/server.py -p 5002
+    command: python3 /home/BC1/server.py -p 5002 -a "0.0.0.0"
