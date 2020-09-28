@@ -1,5 +1,5 @@
 #!/bin/bash
-project_path=/home/ec2-user/CMS
+project_path=/home/ec2-user/BlockChain
 
 pushd ${project_path}
     docker-compose down
