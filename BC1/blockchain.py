@@ -10,7 +10,6 @@ Block structure
 - index
 - timestamp
 - transactions: list of transactions
-- transaction 1：sender/recipient/amount
 - proof: the number satisfied with hash requirement
 - previous_hash hash value of previous block
 '''
@@ -38,12 +37,12 @@ class BlockChain:
         self.chain.append(block)
         return block
 
-    def new_transaction(self, sender: str, recipient: str, timestart: str, timeend: str, amount: float) -> int:
+    def new_transaction(self, sender: str, recipient: str, timestart: str, timeend: str, data: str) -> int:
         self.transactions.append({'sender': sender,
                                   'recipient': recipient,
-								  'timestart': timestart,
-								  'timeend': timeend,
-                                  'amount': amount})
+				  'timestart': timestart,
+				  'timeend': timeend,
+                                  'data': data})
         # The index of the block which transactions will be packages
         return self.last_block['index'] + 1
 

@@ -5,24 +5,24 @@ from uuid import uuid4
 sys.path.append('./')
 import blockchain as bc
 import requests
-import json
+import json, time
 
 app = Flask(__name__, template_folder='./',static_folder="",static_url_path="")
 node_id = str(uuid4()).replace('-', '')
 blockchain = bc.BlockChain()
 
-
+hash_list = []
 @app.route('/mine', methods=['GET'])
-def mine():
+def mine(self, sender: str, recipient: str, timestart: str, timeend: str, data: str):
     last_block = blockchain.last_block
     last_proof = last_block['proof']
     proof = blockchain.pow(last_proof)  #long time to get the result depend on power
     # Deliver bonus
-    blockchain.new_transaction(sender='0', # From system
-                               recipient=node_id,
-							   timestart='',
-							   timeend='',
-                               amount=1)
+    blockchain.new_transaction(sender=sender, # From system
+                               recipient=recipient,
+							   timestart=timestart,
+							   timeend=timeend,
+                               data=data)
     block = blockchain.new_block(proof)
     response = {'message': 'New block forged',
                 'index': block['index'],
@@ -42,16 +42,38 @@ def mine():
 def new_transaction():
     values = request.get_json()
     keys = values.keys()
-    required = ['sender', 'recipient', 'timestart', 'timeend', 'amount']
+    required = ['sender', 'recipient', 'timestart', 'timeend', 'data']
     for r in required:
         if not (r in keys):
             return 'Missing value for %s ' % r, 400
-    index = blockchain.new_transaction(values['sender'],
+    
+#    response = {'message': 'Transaction will be added to block {index}'}
+    last_block = blockchain.last_block
+    last_proof = last_block['proof']
+    proof = blockchain.pow(last_proof)  #long time to get the result depend on power
+    # Deliver bonus
+    blockchain.new_transaction(values['sender'],
                                        values['recipient'],
-									   values['timestart'],
-									   values['timeend'],
-                                       values['amount'])
-    response = {'message': 'Transaction will be added to block {index}'}
+                                       values['timestart'],
+                                       values['timeend'],
+                                       values['data'])
+    hash_data = values.get('data')
+    print(hash_data)
+#    for i in range(0, 100):
+    if existRecord(hash_data):
+        block = blockchain.new_block(proof)
+        response = {'message': 'New block forged',
+            'index': block['index'],
+            'transactions': block['transactions'],
+            'proof': block['proof'],
+            'previous_hash': block['previous_hash']}
+        return jsonify(response), 201
+    else:
+        putIntoRecords(hash_data)
+        time.sleep(1)
+            
+    response = {'message': 'timeout'
+                }
     return jsonify(response), 201
 
 @app.route('/chain', methods=['GET'])
@@ -129,6 +151,20 @@ def reg_nodes():
       print (response.text)
    return response.text, 201
  
+def existRecord(target_hash):
+    print("begin to check")
+    for a in hash_list:
+        if a==target_hash:
+            hash_list.remove(a)
+            return True
+    return False
+     
+
+def putIntoRecords(target_hash):
+    print("this is the first one")
+    hash_list.append(target_hash)
+    return 
+
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('-p',
